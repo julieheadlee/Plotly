@@ -1,24 +1,27 @@
 // Use D3 fetch to read the JSON file
-
-d3.json("data/samples.json").then((importedData) => {
-  // need the names for the drop down
-  var names = Object.values(importedData.names);
-
-  let dropdown = document.getElementById('selDataset');
-
-  let option;
-  for (let i = 0; i < names.length; i++) {
-    option = document.createElement('option');
-    option.text = names[i];
-    dropdown.add(option);
-  }    
-
-});
-
-function optionChanged() {
+function init() {
   d3.json("data/samples.json").then((importedData) => {
     // need the names for the drop down
     var names = Object.values(importedData.names);
+    var metadata = Object.values(importedData.metadata);
+    var samples = Object.values(importedData.samples);
+
+    let dropdown = document.getElementById('selDataset');
+
+    let option;
+    for (let i = 0; i < names.length; i++) {
+      option = document.createElement('option');
+      option.text = names[i];
+      dropdown.add(option);
+    }
+    getSampleData(names[0], metadata);
+    getPlots(names[0], samples);
+  })
+};
+
+function optionChanged() {
+  d3.json("data/samples.json").then((importedData) => {
+
     var metadata = Object.values(importedData.metadata);
     var samples = Object.values(importedData.samples);
 
@@ -26,22 +29,19 @@ function optionChanged() {
     var id = d3.select("#selDataset").node().value;
 
     // build the metadata box
-    getSampleData(id, names, metadata);
-  });
+    getSampleData(id, metadata);
 
-  // Build the plot with the new stock
-  // buildPlot(stock);
+    // Build the bar chart with the new person
+    getPlots(id,samples);
+  });
 };
 
-function getSampleData(id, names, metadata) {
+function getSampleData(id, metadata) {
 
-  console.log(names);
-  console.log(metadata);
   //filter to the record of the id selected
   let record = metadata.filter(function (f) {
     return f.id == id;
   })
-  console.log(record);
   
   // get the data from that record
   var id = "ID: " + record[0].id;
@@ -52,13 +52,12 @@ function getSampleData(id, names, metadata) {
   var bbtype = "Bbtype: " + record[0].bbtype;
   var wfreq = "Wfreq: " + record[0].wfreq;
 
-  console.log("ID: " & id);
   // build datastring to use for demo box
   var demographics = new Array(id, ethnicity, gender, age, location, bbtype, wfreq);
   
-  console.log(demographics);
   // build the demographic info box
   var demo = d3.select("#sample-metadata");
+  demo.html("");
   var demoLine = demo.selectAll("div")
     .data(demographics)
     .enter()
@@ -66,6 +65,32 @@ function getSampleData(id, names, metadata) {
     .text(function(d) {
       return d;
     });
-
 };
 
+function getPlots(id, samples) {
+  //filter to the record of the id selected
+  let record = samples.filter(function (f) {
+    return f.id == id;
+  })  
+  console.log(record);
+
+  // get the data from the record
+  var otu_ids = record[0].otu_ids.slice(0,10);
+  var sample_values = record[0].sample_values.slice(0,10);
+  var otu_labels = record[0].otu_labels.slice(0,10);
+
+  var trace = [
+    {
+      x: sample_values,
+      y: otu_ids,
+      text: otu_labels,
+      orientation: "h",
+      type: 'bar'
+    };
+  
+  ];
+  
+  Plotly.newPlot('bar', trace);
+};
+
+init();
