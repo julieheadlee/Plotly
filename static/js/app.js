@@ -65,15 +65,17 @@ function getSampleData(id, metadata) {
     .text(function(d) {
       return d;
     });
+  
 };
 
 function getPlots(id, samples) {
   //filter to the record of the id selected
+
   let record = samples.filter(function (f) {
     return f.id == id;
-  })  
-  console.log(record);
+  });  
 
+  
   // get the data from the record
   var otu_ids = record[0].otu_ids.slice(0,10).reverse();
   var sample_values = record[0].sample_values.slice(0,10).reverse();
@@ -86,18 +88,61 @@ function getPlots(id, samples) {
   })
 
   // create bar chart trace
-  var traceBar = [
-    {
+  var traceBar = [{
       x: sample_values,
       y: otu_full_ids,
       text: otu_labels,
       orientation: "h",
       type: 'bar'
-    }
-  
-  ];
-  
+  }];
+
   Plotly.newPlot('bar', traceBar);
+
+  // create bubble chart trace
+  var traceBubble = [{
+    x: otu_ids,
+    y: sample_values,
+    text: otu_labels,
+    mode: 'markers',
+    marker: {
+      color: otu_ids,
+      size: sample_values
+    }
+  }];
+  
+  var layout = {
+    height: 600,
+    width: 800,
+    xaxis: { 
+      title: {
+        text: 'OTU_ID'
+      }
+    }
+  }
+  
+  Plotly.newPlot('bubble', traceBubble, layout);
+
 };
 
+function getGauge(wfreq) {
+//  The Gauge chart
+
+  var traceGauge = [
+    {
+      type: "indicator",
+      value: wfreq,
+      title: {text: "Scrubs per Week"},
+      delta: { reference: 250 },
+      gauge: { axis: { visible: false, range: [0, 250] } },
+      mode: "gauge+number"
+    },
+  ];
+  
+  var layoutGauge = {
+    width: 300,
+    height: 300,
+  };
+  
+  Plotly.newPlot('gauge', data, layout);
+};
 init();
