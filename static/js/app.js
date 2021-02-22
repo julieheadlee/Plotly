@@ -75,22 +75,29 @@ function getPlots(id, samples) {
   console.log(record);
 
   // get the data from the record
-  var otu_ids = record[0].otu_ids.slice(0,10);
-  var sample_values = record[0].sample_values.slice(0,10);
-  var otu_labels = record[0].otu_labels.slice(0,10);
+  var otu_ids = record[0].otu_ids.slice(0,10).reverse();
+  var sample_values = record[0].sample_values.slice(0,10).reverse();
+  var otu_labels = record[0].otu_labels.slice(0,10).reverse();
 
-  var trace = [
+  // create full ids for the bacteria samples for the chart
+  otu_full_ids = [];
+  otu_ids.forEach(function(otu_id) {
+    otu_full_ids.push("OTU " + otu_id)
+  })
+
+  // create bar chart trace
+  var traceBar = [
     {
       x: sample_values,
-      y: otu_ids,
+      y: otu_full_ids,
       text: otu_labels,
       orientation: "h",
       type: 'bar'
-    };
+    }
   
   ];
   
-  Plotly.newPlot('bar', trace);
+  Plotly.newPlot('bar', traceBar);
 };
 
 init();
