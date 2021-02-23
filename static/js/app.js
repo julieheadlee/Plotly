@@ -136,8 +136,8 @@ function getGauge(wfreq) {
       type: "indicator",
       value: wfreq,
       title: {text: "Scrubs per Week"},
-      delta: { reference: 7 },
-      gauge: { axis: { visible: false, range: [0, 7] } },
+      delta: { reference: 9 },
+      gauge: { axis: { visible: false, range: [0, 9] } },
       mode: "gauge+number"
     },
   ];
