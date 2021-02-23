@@ -81,8 +81,11 @@ function getPlots(id, samples) {
   var otu_ids = record[0].otu_ids.slice(0,10).reverse();
   var sample_values = record[0].sample_values.slice(0,10).reverse();
   var otu_labels = record[0].otu_labels.slice(0,10).reverse();
-
-  // create full ids for the bacteria samples for the chart
+  var all_otu_ids = record[0].otu_ids;
+  var all_sample_values = record[0].sample_values;
+  var all_otu_labels = record[0].otu_labels;
+  
+    // create full ids for the bacteria samples for the chart
   otu_full_ids = [];
   otu_ids.forEach(function(otu_id) {
     otu_full_ids.push("OTU " + otu_id)
@@ -101,13 +104,13 @@ function getPlots(id, samples) {
 
   // create bubble chart trace
   var traceBubble = [{
-    x: otu_ids,
-    y: sample_values,
-    text: otu_labels,
+    x: all_otu_ids,
+    y: all_sample_values,
+    text: all_otu_labels,
     mode: 'markers',
     marker: {
-      color: otu_ids,
-      size: sample_values
+      color: all_otu_ids,
+      size: all_sample_values
     }
   }];
   
