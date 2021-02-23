@@ -43,6 +43,7 @@ function getSampleData(id, metadata) {
     return f.id == id;
   })
   
+  getGauge(record[0].wfreq);
   // get the data from that record
   var id = "ID: " + record[0].id;
   var ethnicity = "Ethnicity: " + record[0].ethnicity;
@@ -132,17 +133,17 @@ function getGauge(wfreq) {
       type: "indicator",
       value: wfreq,
       title: {text: "Scrubs per Week"},
-      delta: { reference: 250 },
-      gauge: { axis: { visible: false, range: [0, 250] } },
+      delta: { reference: 7 },
+      gauge: { axis: { visible: false, range: [0, 7] } },
       mode: "gauge+number"
     },
   ];
   
   var layoutGauge = {
-    width: 300,
-    height: 300,
+    width: 600,
+    height: 600,
   };
   
-  Plotly.newPlot('gauge', data, layout);
+  Plotly.newPlot('gauge', traceGauge, layoutGauge);
 };
 init();
